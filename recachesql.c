@@ -43,15 +43,6 @@ extern "C" {
  * recachesql_info()
  */
 
-my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
-{
-	return 0;
-}
-
-void recachesql_info_deinit(UDF_INIT *initid)
-{
-}
-
 /* For functions that return REAL */
 /* double recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) */
 /* For functions that return INTEGER */
@@ -202,3 +193,14 @@ int recachesql(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
 	redisFree(c);
 	return 0;
 }
+
+my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+        return 0;
+}
+
+void recachesql_info_deinit(UDF_INIT *initid)
+{
+	free(initid->ptr);
+}
+
