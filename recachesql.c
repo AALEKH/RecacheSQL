@@ -1,9 +1,70 @@
 #include "recachesql.h"
 
+/* For Redis Operation */
+
+#include "hiredis/hiredis.h"
+#include "hiredis/async.h"
+#include "hiredis/adapters/ae.h"
+
 /**
  * Allocate unused space for a string with a specific size and null terminate it.
  * The string does not need to be null terminated.
+ * For Windows, define PACKAGE_STRING in the VS project */
+
+#ifndef __WIN__
+#include "config.h"
+#endif
+
+/* These must be right or mysqld will not find the symbol! */
+#ifdef	__cplusplus
+extern "C" {
+#endif
+	DLLEXP my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message);
+	DLLEXP void recachesql_info_deinit(UDF_INIT *initid);
+	/* For functions that return STRING or DECIMAL */ 
+	DLLEXP char *recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error);
+
+	/* For functions that return REAL */
+	/* DLLEXP double recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error); */
+	/* For functions that return INTEGER */
+	/* DLLEXP longlong recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error); */
+
+	/* If you are doing an Aggregate function you'll need these too */
+	/* DLLEXP void recachesql_info_clear( UDF_INIT* initid, char* is_null, char* is_error ); */
+	/* DLLEXP void recachesql_info_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error ); */
+
+#ifdef	__cplusplus
+}
+#endif
+
+
+/*
+ * Output the library version.
+ * recachesql_info()
  */
+
+my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	return 0;
+}
+
+void recachesql_info_deinit(UDF_INIT *initid)
+{
+}
+
+/* For functions that return REAL */
+/* double recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) */
+/* For functions that return INTEGER */
+/* longlong recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) */
+
+/* For functions that return STRING or DECIMAL */ 
+char* recachesql_info(UDF_INIT *initid, UDF_ARGS *args, char* result, unsigned long* length,	char *is_null, char *error)
+{
+	strcpy(result, PACKAGE_STRING);
+	*length = strlen(PACKAGE_STRING);
+	return result;
+}
+
 char *strncpy_alloc(const char *str, unsigned long length)
 {
 	if (str == NULL) return NULL;
@@ -108,4 +169,36 @@ char *copy_argname(char *att, unsigned long length)
 	str[length] = 0;
 
 	return str;
+}
+
+my_bool recachesql_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
+	if (args->arg_count != 1) {
+       		strcpy(message, "recachesql can only accept one argument");
+		return 1; 
+	}
+	
+	if (args->arg_type[0] != STRING_RESULT) {
+		strcpy(message, "recachesql argument has to be an string");
+		return 1; 
+	}
+	
+	return 0;
+}
+
+int recachesql(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
+	redisContext *c;
+	redisReply *reply;
+	c = redisConnect("127.0.0.1", 6379);
+	if(c!=NULL && c->err){
+		printf("Error: %s\n", c->errstr);
+	}
+	reply = redisCommand(c,"SET %s %s", "foo", "hello world");
+	printf("SET: %s\n", reply->str);
+	freeReplyObject(reply);
+
+	reply = redisCommand(c,"GET foo");
+	printf("GET foo: %s\n", reply->str);
+	freeReplyObject(reply);
+	redisFree(c);
+	return 0;
 }
