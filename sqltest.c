@@ -27,7 +27,7 @@ void concat(char s1[], char s2[]) {
    s1[i] = '\0';
 }
 
-void get_values(MYSQL *con, char row[20], char t_name[25] ) {
+void get_values(MYSQL *con, char row[200], char t_name[250] ) {
   
   redisContext *c;
   redisReply *reply;
@@ -47,7 +47,6 @@ void get_values(MYSQL *con, char row[20], char t_name[25] ) {
   }
   
   MYSQL_RES *result = mysql_store_result(con);
-  
   if (result == NULL) 
   {
       finish_with_error(con);
@@ -58,10 +57,11 @@ void get_values(MYSQL *con, char row[20], char t_name[25] ) {
   MYSQL_ROW row_name;
   
   while ((row_name = mysql_fetch_row(result))) 
-  { 
-      for(int i,j = 0; i < num_fields; i++, j++) 
+  {   printf("here");
+      for(int i = 0; i < num_fields; i++) 
       { 
-        concat(row, sprintf(str, "%d", j));
+        //concat(row, i);
+        printf("chal please :( %s\n", row);
         printf("see this: %s\n", t_name);
         reply = redisCommand(c,"HMSET %s %s %s", t_name, row, row_name[i]);
         printf("%s\n", reply);
