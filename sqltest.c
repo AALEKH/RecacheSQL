@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <ctype.h>
 #include "hiredis/hiredis.h"
 #include "hiredis/async.h"
 #include "hiredis/adapters/libevent.h"
@@ -32,6 +33,7 @@ void get_values(MYSQL *con, char row[200], char t_name[250] ) {
   redisContext *c;
   redisReply *reply;
   char vi[1024] = "SELECT ";
+  int j = 0;
   char str[500];
   c = redisConnect("127.0.0.1", 6379);
   if(c!=NULL && c->err){
@@ -57,18 +59,13 @@ void get_values(MYSQL *con, char row[200], char t_name[250] ) {
   MYSQL_ROW row_name;
   
   while ((row_name = mysql_fetch_row(result))) 
-  {   printf("here");
-      for(int i = 0; i < num_fields; i++) 
+  {  
+      for(int i = 0; i < num_fields;) 
       { 
-        //concat(row, i);
-        printf("chal please :( %s\n", row);
-        printf("see this: %s\n", t_name);
-        reply = redisCommand(c,"HMSET %s %s %s", t_name, row, row_name[i]);
-        printf("%s\n", reply);
-        freeReplyObject(reply);
-        //printf("%s ", row_name[i] ? row_name[i] : "NULL"); HMSET tutorialspoint name-aa "aalekh" 
+        j = j + 1;
+        redisCommand(c,"LPUSH %s-%s '%s'", t_name, row, row_name[i]);
+        i = i + 1;
       } 
-          printf("\n\n\n\n"); 
   }
 
 }
@@ -76,7 +73,7 @@ void get_values(MYSQL *con, char row[200], char t_name[250] ) {
 int main(int argc, char **argv)
 {      
   MYSQL *con = mysql_init(NULL);
-  
+
   if (con == NULL)
   {
       fprintf(stderr, "mysql_init() failed\n");
@@ -114,7 +111,6 @@ int main(int argc, char **argv)
   { 
       for(int i = 0; i < num_fields; i++) 
       { 
-          //printf("%s ", row[i] ? row[i] : "NULL");
           get_values(con, row[i], "Cars"); 
       } 
           printf("\n"); 
