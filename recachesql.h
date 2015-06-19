@@ -27,7 +27,7 @@ typedef long long longlong;
 #include <mysql.h>
 #include <ctype.h>
 
-#include "config.h"
+//#include "config.h"
 
 char *strncpy_alloc(const char *str, unsigned long length);
 void **ptr_calloc(size_t nelem, size_t elsize);

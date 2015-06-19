@@ -20,7 +20,7 @@
  * For Windows, define PACKAGE_STRING in the VS project */
 
 #ifndef __WIN__
-#include "config.h"
+//#include "config.h"
 #endif
 
 /* These must be right or mysqld will not find the symbol! */
@@ -252,9 +252,7 @@ my_bool recachesql_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
 }
 
 int recachesql(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
-/*	args->args[0];
-	args->args[0];
-*/	
+
 	MYSQL *con = mysql_init(NULL);
 
 	if (con == NULL) {
@@ -308,7 +306,14 @@ int recachesql(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
 
 my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
-        return 0;
+
+     if (args->arg_count != 2)
+     {
+       strcpy(message, "recachesql udf's takes 2 arguments");
+	   return 1; 
+	}
+
+     return 0;
 }
 
 void recachesql_info_deinit(UDF_INIT *initid)
