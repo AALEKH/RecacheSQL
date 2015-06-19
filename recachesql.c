@@ -23,7 +23,7 @@
 //#include "config.h"
 #endif
 
-/* These must be right or mysqld will not find the symbol! */
+/*w These must be right or mysqld will not find the symbol! */
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -304,7 +304,7 @@ int recachesql(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
 	return 0;
 }
 
-my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+my_bool rcdecachesql_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
 
      if (args->arg_count != 2)
@@ -316,7 +316,7 @@ my_bool recachesql_info_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
      return 0;
 }
 
-void recachesql_info_deinit(UDF_INIT *initid)
+void recachesql_deinit(UDF_INIT *initid)
 {
 	free(initid->ptr);
 }
