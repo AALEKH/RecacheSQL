@@ -132,7 +132,7 @@ void get_values(MYSQL *con, char row[200], char t_name[250] ) {
 }
 
 my_bool recachesql_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
-	if (args->arg_count != 1) {
+	if (args->arg_count != 2) {
        		strcpy(message, "recachesql can only accept one argument");
 		return 1; 
 	}
@@ -198,17 +198,6 @@ int recachesql(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
 	return 0;
 }
 
-my_bool rcdecachesql_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
-{
-
-     if (args->arg_count != 2)
-     {
-       strcpy(message, "recachesql udf's takes 2 arguments");
-	   return 1; 
-	}
-
-     return 0;
-}
 
 void recachesql_deinit(UDF_INIT *initid)
 {
