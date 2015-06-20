@@ -1,7 +1,7 @@
 RecacheSQL
 ===========
 
-**Redis UDF to insert column values in a MariaDB/MySQL table to Redis list **
+**Redis UDF to insert column values in a MariaDB/MySQL table to Redis list**
 
 This UDF provide functionality to insert values from MariaDB/MySQL table to Redis. Current supported data structure for Redis is list, but other support are possible in future. **Please do not use this in production right now**, as this is not very well tested and **crashes the MariaDB/MySQL server at many times**. 
    
@@ -31,5 +31,8 @@ This UDF provide functionality to insert values from MariaDB/MySQL table to Redi
 * Select recachesql("testdb", "Cars"), will store all teh values existing in a column as Redis-list. 
 * To access the value name in that UDF simply enter (in redis-cli): lget `TABLE NAME-COLUMN NAME`
 
+## Testing
+
+* **This redis has currently only been tested on MAC OS X enviornment , however pull request for other system            enviornment are welcome**
 
 
