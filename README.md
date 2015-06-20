@@ -33,6 +33,6 @@ This UDF provide functionality to insert values from MariaDB/MySQL table to Redi
 
 ## Testing
 
-* **This redis has currently only been tested on MAC OS X enviornment , however pull request for other system            enviornment are welcome**
+* **This redis-udf has currently only been tested on MAC OS X enviornment , however pull request for other system            enviornment are welcome**
 
 
